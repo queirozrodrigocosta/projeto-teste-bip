@@ -1,0 +1,60 @@
+<div class="container">
+  <h1>Gerenciar Beneficiarios</h1>
+
+  <div class="form-section">
+    <h2>{{ editandoId() ? 'Atualizar' : 'Novo' }} Beneficiario</h2>
+    <form (ngSubmit)="salvar()">
+      <input [(ngModel)]="formulario.nome" name="nome" placeholder="Nome" required>
+      <input [(ngModel)]="formulario.cpf" name="cpf" placeholder="CPF" required>
+      <input [(ngModel)]="formulario.saldo" type="number" step="0.01" name="saldo" placeholder="Saldo" required>
+      <div class="button-group">
+        <button type="submit">{{ editandoId() ? 'Atualizar' : 'Criar' }}</button>
+        <button type="button" (click)="cancelar()" *ngIf="editandoId()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-section">
+    <h2>Transferir</h2>
+    <form (ngSubmit)="executarTransferencia()">
+      <select [(ngModel)]="transferencia.idOrigem" name="origem" required>
+        <option value="">Selecione Origem</option>
+        <option *ngFor="let b of beneficiarios()" [value]="b.id">{{ b.nome }} (R$ {{ b.saldo | number:'1.2-2' }})</option>
+      </select>
+      <select [(ngModel)]="transferencia.idDestino" name="destino" required>
+        <option value="">Selecione Destino</option>
+        <option *ngFor="let b of beneficiarios()" [value]="b.id">{{ b.nome }}</option>
+      </select>
+      <input [(ngModel)]="transferencia.valor" type="number" step="0.01" name="valor" placeholder="Valor" required>
+      <button type="submit">Transferir</button>
+    </form>
+  </div>
+
+  <div class="lista-section">
+    <h2>Lista de Beneficiarios</h2>
+    <table *ngIf="beneficiarios().length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Saldo</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of beneficiarios()">
+          <td>{{ b.id }}</td>
+          <td>{{ b.nome }}</td>
+          <td>{{ b.cpf }}</td>
+          <td>R$ {{ b.saldo | number:'1.2-2' }}</td>
+          <td>
+            <button class="btn-edit" (click)="editar(b)">Editar</button>
+            <button class="btn-delete" (click)="remover(b.id)">Deletar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="beneficiarios().length === 0" class="empty-message">Nenhum beneficiario cadastrado</p>
+  </div>
+</div>
